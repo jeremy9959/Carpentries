@@ -20,14 +20,12 @@ jekyll_directory = Path(sys.argv[2])
 # port on local machine where jekyll material is served
 port = 4000
 
-# index file in blog
-index_html = Path("{}/{}".format(jekyll_directory, "index.html"))
+# name of html file in blog
+html_file = "relay.html"
+blog_path = Path("{}/_site/{}".format(jekyll_directory, html_file))
 
-# top matter added above the notebook
-top_matter = """
-<h1>Jupyter Notebook Relay</h1>
-"""
-
+# default layout for blog post
+#top_matter = "---\nlayout: none\n---\n"
 # command to convert jupyter notebook to html
 nbconvert_cmd = "jupyter nbconvert {} --to html --stdout".format(str(watch_file_path))
 
@@ -42,10 +40,6 @@ start_blog = "bundle exec --gemfile={} jekyll serve --source {} --destination {}
 
 def startup():
 
-    # put the topmatter (only) in the blog home
-    with index_html.open("w") as f:
-        f.write(top_matter)
-
     # start the ngrok relay
     try:
         _ = requests.get("http://localhost:4040/api")
@@ -58,37 +52,41 @@ def startup():
     ngrok_tunnel = {"name": "relay_tunnel", "addr": port, "proto": "http"}
     setup_tunnel = requests.post("http://localhost:4040/api/tunnels", json=ngrok_tunnel)
     tunnel = setup_tunnel.json()
-    print("Relay will be available at:\n {}".format(tunnel["public_url"]))
+    print("Relay will be available at:\n {}/{}".format(tunnel["public_url"], html_file))
 
     # start the jekyll blog
-    _ = subprocess.Popen(shlex.split(start_blog), stdout=subprocess.DEVNULL)
+    _ = subprocess.Popen(shlex.split(start_blog))
 
 
-def make_index_html():
-    with index_html.open("w") as f:
-        f.write(top_matter)
+def relay_html():
 
-    with index_html.open("a") as f:
+#    with blog_path.open("w") as f:
+#        f.write(top_matter)
+
+    with blog_path.open("w") as f:
+
         nbconvert_process = subprocess.Popen(shlex.split(nbconvert_cmd), stdout=f)
+        try:
+            nbconvert_process.wait(600)
+        except subprocess.TimeoutExpired:
+            pass
     return nbconvert_process
 
 
 def on_created(event):
     print("created!")
-    make_index_html()
+    relay_html()
     return
 
 
 def on_deleted(event):
     print("deleted!")
-    with index_html.open("w") as f:
-        f.write(top_matter)
     return
 
 
 def on_modified(event):
     print("modified")
-    make_index_html()
+    relay_html()
     return
 
 
@@ -124,7 +122,6 @@ if __name__ == "__main__":
             tunnel_stop = requests.delete(
                 "http://localhost:4040/api/tunnels/relay_tunnel (http)"
             )
-            print("http: {}".format(tunnel_stop.status_code))
         except ConnectionError:
             print("Warning: Failed to close the http tunnel")
 
