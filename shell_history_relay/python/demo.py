@@ -3,50 +3,65 @@ import time
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from pathlib import Path
-import subprocess, shlex
+import subprocess
+import shlex
+import requests
+from requests.exceptions import ConnectionError
 
 # home directory
 home = str(Path.home())
+
 # full path to file to watch for changes
 watch_file_path = Path(sys.argv[1])
-# location of jekyll blog
+
+# jekyll directory
 jekyll_directory = Path(sys.argv[2])
-# name of ngrok endpoint
-hostname = "server.jeremy9959.net"
-# port on local machine where blog is
+
+# port on local machine where jekyll material is served
 port = 4000
 
 # index file in blog
 index_html = Path("{}/{}".format(jekyll_directory, "index.html"))
 
-# top matter above the history
+# top matter added above the notebook
 top_matter = """
 <h1>Jupyter Notebook Relay</h1>
 """
-# jupyter notebook to html
+
+# command to convert jupyter notebook to html
 nbconvert_cmd = "jupyter nbconvert {} --to html --stdout".format(str(watch_file_path))
-# start the jekyll blog
+
+# command to start the jekyll blog
 start_blog = "bundle exec --gemfile={} jekyll serve --source {} --destination {} --port {}".format(
     str(jekyll_directory / "Gemfile"),
     str(jekyll_directory),
     str(jekyll_directory / "_site"),
     port,
 )
-# start the ngrok relay
-start_ngrok = home + "/ngrok http {}".format(port)
 
 
 def startup():
+
     # put the topmatter (only) in the blog home
     with index_html.open("w") as f:
         f.write(top_matter)
 
-    # start the jekyll blog
-    blog_process = subprocess.Popen(shlex.split(start_blog))
-
     # start the ngrok relay
-    ngrok_relay = subprocess.Popen(shlex.split(start_ngrok))
-    return blog_process, ngrok_relay
+    try:
+        _ = requests.get("http://localhost:4040/api")
+    except ConnectionError:
+        print(
+            "ngrok is not available, please run\n~/ngrok start --none\nand then restart this script"
+        )
+        exit(1)
+
+    ngrok_tunnel = {"name": "relay_tunnel", "addr": port, "proto": "http"}
+    setup_tunnel = requests.post("http://localhost:4040/api/tunnels", json=ngrok_tunnel)
+    tunnel = setup_tunnel.json()
+    print("Relay will be available at {}".format(tunnel["public_url"]))
+
+    # start the jekyll blog
+    _ = subprocess.Popen(shlex.split(start_blog))
 
 
 def make_index_html():
@@ -59,22 +74,26 @@ def make_index_html():
 
 
 def on_created(event):
+    print("created!")
     make_index_html()
     return
 
 
 def on_deleted(event):
+    print("deleted!")
     with index_html.open("w") as f:
         f.write(top_matter)
     return
 
 
 def on_modified(event):
+    print("modified")
     make_index_html()
     return
 
 
 def on_moved(event):
+    print("moved!")
     on_deleted(event)
     return
 
@@ -100,4 +119,20 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
+        try:
+            tunnel_stop = requests.delete(
+                "http://localhost:4040/api/tunnels/relay_tunnel (http)"
+            )
+            print("http: {}".format(tunnel_stop.status_code))
+        except ConnectionError:
+            print("Failed to close the http tunnel")
+
+        try:
+            tunnel_stop = requests.delete(
+                "http://localhost:4040/api/tunnels/relay_tunnel"
+            )
+            print("https: {}".format(tunnel_stop.status_code))
+        except ConnectionError:
+            print("Failed to close the https tunnel")
+
     observer.join()
