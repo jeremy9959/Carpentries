@@ -12,7 +12,7 @@ from requests.exceptions import ConnectionError
 home = str(Path.home())
 
 # full path to file to watch for changes
-watch_file_path = Path(sys.argv[1])
+watch_file_path = Path(sys.argv[1]).absolute()
 
 # jekyll directory
 jekyll_directory = Path(sys.argv[2])
@@ -101,11 +101,12 @@ def on_moved(event):
 if __name__ == "__main__":
 
     startup()
-    pattern = ["str(watch_file_path)"]
+    pattern = [str(watch_file_path)]
+    print(pattern)
     ignore_patterns = ""
     ignore_directories = True
     case_sensitive = True
-    my_event_handler = PatternMatchingEventHandler()
+    my_event_handler = PatternMatchingEventHandler(patterns=pattern)
     my_event_handler.on_created = on_created
     my_event_handler.on_deleted = on_deleted
     my_event_handler.on_modified = on_modified
@@ -116,7 +117,7 @@ if __name__ == "__main__":
     observer.start()
     try:
         while True:
-            time.sleep(1)
+            time.sleep(20)
     except KeyboardInterrupt:
         observer.stop()
         try:
