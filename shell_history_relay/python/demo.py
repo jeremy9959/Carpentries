@@ -33,7 +33,7 @@ start_blog = "bundle exec --gemfile={} jekyll serve --source {} --destination {}
     port,
 )
 # start the ngrok relay
-start_ngrok = home + "/ngrok http --hostname {} {}".format(hostname, port)
+start_ngrok = home + "/ngrok http {}".format(port)
 
 
 def startup():
@@ -53,40 +53,33 @@ def make_index_html():
     with index_html.open("w") as f:
         f.write(top_matter)
 
-    print(nbconvert_cmd)
-    print("--------------->", shlex.split(nbconvert_cmd))
     with index_html.open("a") as f:
         nbconvert_process = subprocess.Popen(shlex.split(nbconvert_cmd), stdout=f)
     return nbconvert_process
 
 
 def on_created(event):
-    print("{} has been created!".format(event.src_path))
     make_index_html()
     return
 
 
 def on_deleted(event):
-    print("{} has been deleted!".format(event.src_path))
+    with index_html.open("w") as f:
+        f.write(top_matter)
     return
 
 
 def on_modified(event):
-    print(f"hey buddy, {event.src_path} has been modified")
     make_index_html()
     return
 
 
 def on_moved(event):
-    print(f"ok ok ok, someone moved {event.src_path} to {event.dest_path}")
-    make_index_html()
+    on_deleted(event)
     return
 
 
 if __name__ == "__main__":
-    print(shlex.split(nbconvert_cmd))
-    print(shlex.split(start_ngrok))
-    print(shlex.split(start_blog))
 
     startup()
     pattern = ["str(watch_file_path)"]
