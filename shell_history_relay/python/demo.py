@@ -58,10 +58,10 @@ def startup():
     ngrok_tunnel = {"name": "relay_tunnel", "addr": port, "proto": "http"}
     setup_tunnel = requests.post("http://localhost:4040/api/tunnels", json=ngrok_tunnel)
     tunnel = setup_tunnel.json()
-    print("Relay will be available at {}".format(tunnel["public_url"]))
+    print("Relay will be available at:\n {}".format(tunnel["public_url"]))
 
     # start the jekyll blog
-    _ = subprocess.Popen(shlex.split(start_blog))
+    _ = subprocess.Popen(shlex.split(start_blog), stdout=subprocess.DEVNULL)
 
 
 def make_index_html():
@@ -102,7 +102,6 @@ if __name__ == "__main__":
 
     startup()
     pattern = [str(watch_file_path)]
-    print(pattern)
     ignore_patterns = ""
     ignore_directories = True
     case_sensitive = True
@@ -115,6 +114,7 @@ if __name__ == "__main__":
     observer = Observer()
     observer.schedule(my_event_handler, str(watch_file_path.parents[0]), recursive=True)
     observer.start()
+
     try:
         while True:
             time.sleep(20)
@@ -126,14 +126,13 @@ if __name__ == "__main__":
             )
             print("http: {}".format(tunnel_stop.status_code))
         except ConnectionError:
-            print("Failed to close the http tunnel")
+            print("Warning: Failed to close the http tunnel")
 
         try:
             tunnel_stop = requests.delete(
                 "http://localhost:4040/api/tunnels/relay_tunnel"
             )
-            print("https: {}".format(tunnel_stop.status_code))
         except ConnectionError:
-            print("Failed to close the https tunnel")
+            print("Warning: Failed to close the https tunnel")
 
     observer.join()
