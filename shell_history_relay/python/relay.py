@@ -9,14 +9,16 @@ import requests
 from requests.exceptions import ConnectionError
 
 
-# full path to Notebook File to be served
+
+# full path to  file to be served
 watch_file_path = Path(sys.argv[1]).absolute()
 
 # port on local machine where file is served
 port = 5000
 
-# name of html file  to be served
+# name of html file (must match flask code in simple_flask.py)
 html_file = "/tmp/relay.html"
+
 
 # command to convert jupyter notebook to html
 nbconvert_cmd = "jupyter nbconvert {} --to html --stdout".format(str(watch_file_path))
@@ -100,12 +102,12 @@ def shutdown(web_server, observer):
     except ConnectionError:
         print("Warning: Failed to close the http tunnel")
         
-        try:
-            tunnel_stop = requests.delete(
-                "http://localhost:4040/api/tunnels/relay_tunnel"
-            )
-        except ConnectionError:
-            print("Warning: Failed to close the https tunnel")
+    try:
+        tunnel_stop = requests.delete(
+            "http://localhost:4040/api/tunnels/relay_tunnel"
+        )
+    except ConnectionError:
+        print("Warning: Failed to close the https tunnel")
 
     # join to shut down observer thread gracefully
     observer.join()
@@ -114,7 +116,6 @@ if __name__ == "__main__":
 
     web_server, nbconvert = start_services()
     watchdog = start_watchdog()
-
     
     try:
         while True:
