@@ -45,7 +45,13 @@ def start_services():
     ## make sure there is a file to serve
     nbconvert = relay_html()
     # start the webserver
-    web_server = subprocess.Popen(shlex.split(start_server_cmd))
+    try:
+        web_server = subprocess.Popen(shlex.split(start_server_cmd))
+    except subprocess.SubprocessError:
+        print(
+            "Could not start webserver -- exiting"
+            )
+        exit(1)
     return web_server, nbconvert
     
 def relay_html():
@@ -54,9 +60,9 @@ def relay_html():
         print('writing to {}'.format(html_file))
         try:
             nbconvert_process = subprocess.Popen(shlex.split(nbconvert_cmd), stdout=f)
-        except OSError:
-            print('problem starting nbconvert process, aborting')
-            shutdown
+        except OSError as err:
+            print('Error {0}:problem starting nbconvert process, aborting'.format(err))
+            exit(1)
         try:
             nbconvert_process.wait(600)
         except subprocess.TimeoutExpired:
