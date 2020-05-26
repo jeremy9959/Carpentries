@@ -103,7 +103,10 @@ $
 ```
 This will create a subdirectory called `YYYY-MM-DD-UConn` which contains (copies of) the files for creating the website.
 
-2. Change into that directory and list the files, looking for the file called `_config.yml`:
+### Step 3: Edit the _config.yml file
+
+
+1. Change into the `YYYY-MM-DD-UConn` directory and list the files, looking for the file called `_config.yml`:
 
 ```
 $ cd YYYY-MM-DD-UConn
@@ -113,7 +116,7 @@ bin/     _episodes/      fig/      _layouts/   AUTHORS   CONDUCT.md          Gem
 code/    _episodes_rmd/  files/    setup/      CITATION  _config.yml         getsql.sh        Makefile
 ```
 
-This is the first file that we need to edit. Open it with a text editor.
+2. This is the first file that we need to edit. Open it with a text editor.
 It is written in a very simple language called YAML.  Lines with `#`
 are comments and contain explanatory text.  Otherwise, the file contains declarations of the form
 
@@ -131,13 +134,21 @@ title: "Workshop Title"
 
 Then replace "Workshop Title" with the title of your workshop.
 
-**Note**: Also confirm that the line with the key `carpentry` is set to `swc`:
+**Note:** This step assumes you are teaching a *Software Carpentry* workshop.  If you are teaching a *Data
+Carpentry* workshop, then you need to make other changes to this file beyond those described here. In particular,
+you will need to:
+
+- set the value for the `carpentry` key to "dc"
+- set the "curriculum" to the appropriate value ("dc-ecology", "dc-genomics", "dc-socsci","dc-geospatial", or possibly others)
+- set the "flavor" to "r" or "python"
+
+See [this web page](https://carpentries.github.io/workshop-template/customization/index.html) for more details.
+
+If you are teaching a *software carpentry workshop*, confirm that the line with the key `carpentry` is set to `swc`:
 
 ```
 carpentry: "swc"
 ```
-
-If for some reason it is not, change it to "swc".
 
 [Here is a movie of this step](./EditYaml.html)
 
@@ -172,8 +183,7 @@ To https://github.com/carpentries-uconn/YYYY-MM-DD-UConn.git
    1d9f535..f847aea  gh-pages -> gh-pages
 ```
 
-4. To see that it worked, go to the developing workshop page (which should be at `carpentries-uconn.github.io/YYYY-MM-DD-UConn`)
-and see that the workshop title is changed!
+4. To see that it worked, go to the developing workshop page (which should be at `carpentries-uconn.github.io/YYYY-MM-DD-UConn`) and see that the workshop title is changed!
 
 ### Step 3: Edit the Webpage (index.md)
 
