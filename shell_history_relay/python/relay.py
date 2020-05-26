@@ -9,7 +9,6 @@ import requests
 from requests.exceptions import ConnectionError
 
 
-
 # full path to  file to be served
 watch_file_path = Path(sys.argv[1]).absolute()
 
@@ -42,21 +41,28 @@ def start_services():
     setup_tunnel = requests.post("http://localhost:4040/api/tunnels", json=ngrok_tunnel)
     tunnel = setup_tunnel.json()
     print("Relay will be available at:\n {}".format(tunnel["public_url"]))
-    ## make sure there is a file to serve
+
+    # make sure there is a file to serve
     nbconvert = relay_html()
+
     # start the webserver
-    web_server = subprocess.Popen(shlex.split(start_server_cmd))
+    try:
+        web_server = subprocess.Popen(shlex.split(start_server_cmd))
+    except OSError as e:
+        print("Could not start webserver: {0} -- exiting".format(e))
+        exit(1)
     return web_server, nbconvert
-    
+
+
 def relay_html():
 
     with Path(html_file).open("w") as f:
-        print('writing to {}'.format(html_file))
+        print("writing to {}".format(html_file))
         try:
             nbconvert_process = subprocess.Popen(shlex.split(nbconvert_cmd), stdout=f)
-        except OSError:
-            print('problem starting nbconvert process, aborting')
-            shutdown
+        except OSError as err:
+            print("Error {0}:problem starting nbconvert process, aborting".format(err))
+            exit(1)
         try:
             nbconvert_process.wait(600)
         except subprocess.TimeoutExpired:
@@ -68,14 +74,13 @@ def make_new_html_file(event):
     relay_html()
     return
 
+
 def do_nothing(event):
     return
 
+
 def start_watchdog():
     pattern = [str(watch_file_path)]
-    ignore_patterns = ""
-    ignore_directories = True
-    case_sensitive = True
     my_event_handler = PatternMatchingEventHandler(patterns=pattern)
     my_event_handler.on_created = make_new_html_file
     my_event_handler.on_deleted = do_nothing
@@ -92,33 +97,30 @@ def shutdown(web_server, observer):
     try:
         web_server.terminate()
     except subprocess.SubprocessError:
-        print('web server did not  stop cleanly')
-        
+        print("web server did not  stop cleanly")
+
     observer.stop()
     try:
-        tunnel_stop = requests.delete(
-            "http://localhost:4040/api/tunnels/relay_tunnel (http)"
-        )
+        _ = requests.delete("http://localhost:4040/api/tunnels/relay_tunnel (http)")
     except ConnectionError:
         print("Warning: Failed to close the http tunnel")
-        
+
     try:
-        tunnel_stop = requests.delete(
-            "http://localhost:4040/api/tunnels/relay_tunnel"
-        )
+        _ = requests.delete("http://localhost:4040/api/tunnels/relay_tunnel")
     except ConnectionError:
         print("Warning: Failed to close the https tunnel")
 
     # join to shut down observer thread gracefully
     observer.join()
 
+
 if __name__ == "__main__":
 
     web_server, nbconvert = start_services()
     watchdog = start_watchdog()
-    
+
     try:
         while True:
             time.sleep(20)
-    except KeyboardInterrupt:            # end the relay with interrupt
+    except KeyboardInterrupt:  # end the relay with interrupt
         shutdown(web_server, watchdog)
