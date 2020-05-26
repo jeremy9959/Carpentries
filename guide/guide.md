@@ -7,7 +7,7 @@ workshop.  To do this successfully, you need:
 
 1. a [github](https://github.com) account.
 2. to be comfortable working at the command line to edit text files using `nano`
-or another editor such as `vscode`, `vim` or `emacs`.
+or another editor such as `vscode`, `vim` or `emacs`. 
 3. to have a basic understanding of `git` including the commands `git status`, `git add`, `git branch`,
 `git checkout`, `git commit`, `git push` and `git pull`.
 4. to be a member of the [Carpentries at UConn](https://github.com/carpentries-uconn)
@@ -15,7 +15,6 @@ organization.  If you have a [github](https://github.com) account,
 contact [Tim Moore](mailto:timothy.e.moore@uconn.edu) and ask to be added to this organization. 
 
 ## Overview
-
 
 The website construction process takes advantage of the ability to publish web pages out of a 
 [github](https://github.com) repository.  There are a number of ways to do this, but the
@@ -75,8 +74,19 @@ YYYY-MM-DD-UConn for the year, month, and day it will be offered.
 
 [Click here for a movie of this process](./MakeTemplate.html)
 
+### Step 2: Edit the Webpage (index.md)
 
+1. First, check that your website works by going to `https://github.com/carpentries-uconn.github.io/YYYY-MM-DD-Uconn`, where yyyy-mm-dd correspond to your workshop. It's easy to break the webpage, and difficult to debug, so make incremental changes, checking to make sure your website still works.
 
+2. Open index.md in the root folder of the repository in a text editor. At the top, you'll be filling in the workshop-specific information. Follow the guide [here](https://carpentries.github.io/workshop-template/customization/index.html#home-page-indexmd-data-in-the-yaml-header) carefully. **Be especially careful to close quotes, and follow formatting guidelines, or the website will break**. Of particular note:
+  a. `venue` should always be `"University of Connecticut"`
+  b. `address` should be the address of the building on campus for physical workshops. See [online workshop configuration](https://carpentries.github.io/workshop-template/customization/index.html#for-online-workshops) for online options
+  c. `country` will always be `"us"`
+  d. `language` will generally be `"en"`
+  e. `eventbrite` **TODO, figure out how we're doing registration as an organization*
 
-
+3. Customize the section templates of the website to your workshop, in the `_includes` folder, especially schedule.html, syllabus.html, and setup.html (see [customizing templates](https://carpentries.github.io/workshop-template/customization/index.html#home-page-schedule-and-syllabus). **Be very careful to make sure that all html tags are closed** (e.g. `<div>` and `</div>`). Otherwise, you'll break the website.
+  a. For schedule, set the start and end times for each day and tailor breaks to your curriculum. It's wise to start half an hour early the first day to deal with setup issues and late arrivals, so that you can start teaching on time. It's also nice to put in the name of the person teaching each section.
+  b. For syllabus, comment out the portions you won't be teaching, using html comments at the beginning and end of the blocks (`<!--` and `-->`). Careful to not include extra lines when doing this that results in `<div>` tags not being closed.
+  c. For setup, comment out the portions that you won't be teaching. 
 
