@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>guide</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="setting-up-a-workshop-website">Setting up a workshop website</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>These notes will walk through the process of setting up a website for a carpentries workshop. To do this successfully, you need:</p>
+<ol type="1">
+<li>a <a href="https://github.com">github</a> account.</li>
+<li>to be comfortable working at the command line to edit text files using <code>nano</code> or another editor such as <code>vscode</code>, <code>vim</code> or <code>emacs</code>.</li>
+<li>to have a basic understanding of <code>git</code> including the commands <code>git status</code>, <code>git add</code>, <code>git branch</code>, <code>git checkout</code>, <code>git commit</code>, <code>git push</code> and <code>git pull</code>.</li>
+<li>to be a member of the <a href="https://github.com/carpentries-uconn">Carpentries at UConn</a> organization. If you have a <a href="https://github.com">github</a> account, contact <a href="mailto:timothy.e.moore@uconn.edu">Tim Moore</a> and ask to be added to this organization.</li>
+</ol>
+<h2 id="overview">Overview</h2>
+<p>The website construction process takes advantage of the ability to publish web pages out of a <a href="https://github.com">github</a> repository. There are a number of ways to do this, but the one employed here relies on a special <code>gh-pages</code> branch in the repository which <a href="https://github.com">github</a>treats as the source code for a website.</p>
+<p>In broad outline, you will be:</p>
+<ul>
+<li><p>creating a new repository inside the [UConn Carpentries repository(https://github.com/carpentries-uconn/) named <code>YYYY-MM-DD-UConn</code> that includes a set of template files taken from the software carpentries.</p></li>
+<li><p>editing some of the template files so that the website will show the correct location, date, and curriculum.</p></li>
+<li><p>updating the repository with these edited files to publish it.</p></li>
+</ul>
+<p>This may be an iterative process as you work out the bugs.</p>
+<p>Before diving in to the technicalities, let’s look at an example. We taught a Carpentries workshop on May 1, 2020. The website for that workshop is located in the repository <a href="https://github.com/carpentries-uconn/2020-05-01-UConn-online">https://github.com/carpentries-uconn/2020-05-01-UConn-online</a>. Follow that link and make sure that the <code>Branch:</code> selector is set to gh-pages. You will see the all of the files that constitute the source code for the workshop’s page.</p>
+<p><a href="https://github.com">Github</a> publishes this page at the link <a href="https://carpentries-uconn.github.io/2020-05-01-Uconn-online">https://carpentries-uconn.github.io/2020-05-01-Uconn-online</a>.</p>
+<p>So to recap, when we create a new workshop page, we will create a repository <code>https://github.com/carpentries-uconn/YYYY-MM-DD-UConn</code> with a branch called <code>gh-pages</code>. The information in that branch will get published at <code>https://github.com/carpentries-uconn.github.io/YYYY-MM-DD-Uconn</code>.</p>
+<p>Many of the complications in this process arise from the fact that instead of being a straightforward collection of <code>html</code> or <code>markdown</code> files, the site is written in a templating language called <code>jekyll</code> which is then processed into its final form. This makes the site look nice, but complicates the setup process. We will <em>not</em> be explaining <code>jekyll</code> in these notes, except insofar as is needed to do the bare minimum of configuration of the final website.</p>
+<p>To learn more about the infrastructure, you can read about <a href="https://pages.github.com/">GitHub Pages</a> and <a href="https://jekyllrb.com/docs/github-pages/">jekyll</a>.</p>
+<h2 id="swc-instructions">SWC Instructions</h2>
+<p>The SWC documentation for this process is located in three places:</p>
+<ul>
+<li><a href="https://github.com/carpentries/workshop-template">The Template Repository</a></li>
+<li>The webpage <a href="https://carpentries.github.io/workshop-template/customization/index.html">Customizing Your Website</a></li>
+<li><a href="https://carpentries.github.io/workshop-template/design/index.html">Design Notes</a></li>
+</ul>
+<p>Essentially we will be working through the process outlined in the first two of these files.</p>
+<h2 id="the-process">The process</h2>
+<h3 id="step-1-create-the-repository">Step 1: Create the Repository</h3>
+<ol type="1">
+<li>Log in to <a href="https://github.com">github</a>.</li>
+<li>Got to the <a href="https://github.com/carpentries/workshop-template">Carpentries Workshop Template</a>.</li>
+<li>Click on the <code>Use this template</code> button, make sure you create the repository in the <a href="https://github.com/carpentries-uconn">Carpentries-uconn</a> organization, and name it YYYY-MM-DD-UConn for the year, month, and day it will be offered.</li>
+</ol>
+<p><a href="./MakeTemplate.html">Click here for a movie of this process</a></p>
+</body>
+</html>
