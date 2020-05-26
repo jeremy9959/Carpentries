@@ -7,7 +7,7 @@ workshop.  To do this successfully, you need:
 
 1. a [github](https://github.com) account.
 2. to be comfortable working at the command line to edit text files using `nano`
-or another editor such as `vscode`, `vim` or `emacs`. 
+or another editor such as `vscode`, `vim` or `emacs`, or using a graphical text editor like `sublime`, `textmate`, or `notepad++`
 3. to have a basic understanding of `git` including the commands `git status`, `git add`, `git branch`,
 `git checkout`, `git commit`, `git push` and `git pull`.
 4. to be a member of the [Carpentries at UConn](https://github.com/carpentries-uconn)
@@ -19,7 +19,7 @@ contact [Tim Moore](mailto:timothy.e.moore@uconn.edu) and ask to be added to thi
 The website construction process takes advantage of the ability to publish web pages out of a 
 [github](https://github.com) repository.  There are a number of ways to do this, but the
 one employed here relies on a special `gh-pages`
-branch in the repository which [github](https://github.com)treats as the source code for a website.
+branch in the repository which [github](https://github.com) treats as the source code for a website.
 
 In broad outline, you will be:
 
@@ -185,20 +185,49 @@ To https://github.com/carpentries-uconn/YYYY-MM-DD-UConn.git
 
 4. To see that it worked, go to the developing workshop page (which should be at `carpentries-uconn.github.io/YYYY-MM-DD-UConn`) and see that the workshop title is changed!
 
-### Step 3: Edit the Webpage (index.md)
+### Step 4: Edit the Webpage (index.md)
 
-1. First, check that your website works by going to `https://github.com/carpentries-uconn.github.io/YYYY-MM-DD-Uconn`, where yyyy-mm-dd correspond to your workshop. It's easy to break the webpage, and difficult to debug, so make incremental changes, checking to make sure your website still works.
+1. First, check that your website works by going to `https://carpentries-uconn.github.io/YYYY-MM-DD-UConn/`, where YYYY-MM-DD correspond to your workshop. It's easy to break the webpage, and difficult to debug, so make incremental changes, checking to make sure your website still works each time.
 
-2. Open index.md in the root folder of the repository in a text editor. At the top, you'll be filling in the workshop-specific information. Follow the guide [here](https://carpentries.github.io/workshop-template/customization/index.html#home-page-indexmd-data-in-the-yaml-header) carefully. **Be especially careful to close quotes, and follow formatting guidelines, or the website will break**. Of particular note:
-  a. `venue` should always be `"University of Connecticut"`
-  b. `address` should be the address of the building on campus for physical workshops. See [online workshop configuration](https://carpentries.github.io/workshop-template/customization/index.html#for-online-workshops) for online options
-  c. `country` will always be `"us"`
-  d. `language` will generally be `"en"`
-  e. `eventbrite` **TODO, figure out how we're doing registration as an organization*
+2. At the top right of your repository page just below the tabs. click on the Edit button. Add the workshop website link there. This makes it convenient to get to the website from your repository. 
 
+3. Open index.md in the root folder of the repository in a text editor. At the top, in the block of yaml encapsulated with `---` (see step 3 above), you'll be filling in the workshop-specific information. Follow the guide [here](https://carpentries.github.io/workshop-template/customization/index.html#home-page-indexmd-data-in-the-yaml-header) carefully. **Be especially careful to close quotes, and follow formatting guidelines, or the website will break**. Of particular note:
+   * `venue` should always be `"University of Connecticut"`
+   * `address` should be the address of the building on campus for physical workshops. See [online workshop configuration](https://carpentries.github.io/workshop-template/customization/index.html#for-online-workshops) for online options.
+   * `country` will always be `"us"`
+   * `language` will generally be `"en"`
+   * `collaborative_notes` Add the link to the etherpad, without quotes. Generally, this should use the same name as the workshop website, but at pad.carpentries.org. For example: `collaborative_notes: https://pad.carpentries.org/2020-05-01-UConn-online`. The etherpad will be created by The Carpentries when you visit the link. 
+   * `eventbrite` **TODO, figure out how we're doing registration as an organization**
+      
+### Step 5: Customizing Workshop Website Sections
 
 3. Customize the section templates of the website to your workshop, in the `_includes` folder, especially schedule.html, syllabus.html, and setup.html (see [customizing templates](https://carpentries.github.io/workshop-template/customization/index.html#home-page-schedule-and-syllabus). **Be very careful to make sure that all html tags are closed** (e.g. `<div>` and `</div>`). Otherwise, you'll break the website.
-  a. For schedule, set the start and end times for each day and tailor breaks to your curriculum. It's wise to start half an hour early the first day to deal with setup issues and late arrivals, so that you can start teaching on time. It's also nice to put in the name of the person teaching each section.
-  b. For syllabus, comment out the portions you won't be teaching, using html comments at the beginning and end of the blocks (`<!--` and `-->`). Careful to not include extra lines when doing this that results in `<div>` tags not being closed.
-  c. For setup, comment out the portions that you won't be teaching. 
+   * For schedule, set the start and end times for each day and tailor breaks to your curriculum. It's wise to start half an hour early the first day to deal with setup issues and late arrivals, so that you can start teaching on time. It's also nice to put in the name of the person teaching each section. Make sure to leave wrap-up time at the end for post-workshop survey and promoting the carpentries.
+   * For syllabus, comment out the portions you won't be teaching, using html comments at the beginning and end of the blocks (`<!--` and `-->`). Be careful to not include extra lines when doing this that results in `<div>` tags not being closed.
+   * For setup, comment out the portions of software setup that aren't relevant to your teaching. Note that the git setup section may be required to install nano for Windows users.
+   * Advanced users can make their own template sections (e.g., for [post-workshop resources](https://github.com/carpentries-uconn/2020-05-01-UConn-online/blob/gh-pages/_includes/swc/resources.html)). These get added to index.md using a line like `include swc/resources.html`. 
+   
+### Step 6: Set Up the Etherpad
 
+It's helpful to spend a bit of time doing some thoughtful setup of the etherpad before the workshop. This is especially useful in getting things going quickly and smoothly at the beginning. A good model for a workshop etherpad from a past workshop is [here](https://pad.carpentries.org/2019-01-10-UCONN).
+
+1. Add a section on what learners should do when they first get to the workshop. Suggestions
+   * Get a nametag and stickies, sign in
+   * Go to the workshop website, and open this etherpad (collaborative notes link)
+   * Name yourself in the etherpad in the top right corner where it says Enter your name
+   * Introduce yourself in the introductions section
+   * Install the software and packages
+   * Take the pre-workshop survey
+   * Open up tabs for things like Socrative
+
+2. Add a section for introductions for instructors, helpers, and learners
+
+3. Add links for Socrative (along with the room name), downloading data, and perhaps a synced version of the instructor's script to follow along with. 
+
+### Troubleshooting
+
+* If there is a problem building the files used to generate the website, then the previous version of the website will stay live. Sometimes it will take a few minutes for your changes to be built, so be patient. You can check the status of your website's build by going to the commit history. Green checkmarks beside the time since commit mean that the build was successful. A red X means that the build failed. A yellow circle denotes build in progress. 
+
+* If a build fails, first compare the changes for that commit with the previous version and look for obvious errors that you can fix. Failing that, try rolling back the commit. 
+
+* Finally, the software carpentry repository includes a makefile tool to check files for some syntax errors and tell you where the problem is. Sometimes, this is helpful. You can run it using `make workshop-check` (requires python to be installed). There are some additional undocumented testing tools in the makefile as well. 
