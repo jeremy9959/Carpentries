@@ -1,5 +1,7 @@
 # Setting up a workshop website
 
+These notes were written by [Jeremy Teitelbaum](mailto:jeremy.teitelbaum@uconn.edu) and [James Mickley](james.mickley@uconn.edu).   Feel free to contact us with questions or if you see typos or errors. 
+
 ## Prerequisites
 
 These notes will walk through the process of setting up a website for a carpentries
